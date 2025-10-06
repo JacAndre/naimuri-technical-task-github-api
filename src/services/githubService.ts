@@ -7,6 +7,11 @@ const github = axios.create({
   },
 })
 
+export const fetchUserInfo = async (username: string) => {
+  const response = await github.get(`/users/${username}`)
+  return response.data
+}
+
 export const fetchReposByUser = async (username: string) => {
   const response = await github.get(`/users/${username}/repos`)
   return response.data
