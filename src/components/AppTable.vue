@@ -1,5 +1,10 @@
 <template>
-  <v-data-table :items="repoStore.repos" :headers="headers" item-value="id" class="elevation-1">
+  <v-data-table
+    :items="repoStore.repos"
+    :headers="headers"
+    item-value="id"
+    class="elevation-1 mt-4"
+  >
     <template #item="{ item }">
       <tr>
         <td>
