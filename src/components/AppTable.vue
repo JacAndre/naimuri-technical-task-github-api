@@ -2,6 +2,7 @@
   <v-data-table
     :items="repoStore.repos"
     :headers="headers"
+    :loading="repoStore.loadingRepos"
     item-value="id"
     class="elevation-1 mt-4"
   >
@@ -21,9 +22,9 @@
         </td>
       </tr>
       <tr v-if="selectedRepoId === item.id">
-        <td colspan="5">
-          <v-card class="pa-4" elevation="2">
-            <pre>{{ repoStore.readme }}</pre>
+        <td colspan="6">
+          <v-card class="ma-4 pa-4" elevation="0" variant="outlined">
+            <ReadmeViewer :content="repoStore.readme" />
           </v-card>
         </td>
       </tr>
@@ -34,6 +35,7 @@
 <script setup lang="ts">
 import { useRepoStore } from '@/stores/useRepoStore'
 import { ref } from 'vue'
+import ReadmeViewer from './ReadmeViewer.vue'
 import type { DataTableHeader } from 'vuetify'
 
 const repoStore = useRepoStore()
