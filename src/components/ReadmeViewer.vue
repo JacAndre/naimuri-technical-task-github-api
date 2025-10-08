@@ -1,16 +1,38 @@
 <template>
-  <v-sheet elevation="1" class="pa-4" style="max-height: 600px; overflow-y: auto; overflow-x: auto">
+  <v-sheet
+    elevation="1"
+    class="pa-4"
+    style="max-height: 600px; overflow-y: auto; overflow-x: auto"
+    role="region"
+    aria-label="Rendered README content"
+  >
     <v-btn
       icon
       size="small"
       class="position-absolute"
       style="top: 16px; right: 16px; z-index: 1"
       @click="copyContent"
+      aria-label="Copy README content to clipboard"
     >
-      <v-icon>mdi-content-copy</v-icon>
+      <v-icon aria-hidden="true">mdi-content-copy</v-icon>
     </v-btn>
-    <v-progress-linear v-if="loading" indeterminate color="primary" height="4" />
-    <div v-else class="markdown-body" v-html="renderedMarkdown" />
+
+    <v-progress-linear
+      v-if="loading"
+      indeterminate
+      color="primary"
+      height="4"
+      aria-label="Loading README content"
+      role="progressbar"
+    />
+
+    <div
+      v-else
+      class="markdown-body"
+      v-html="renderedMarkdown"
+      role="document"
+      aria-label="GitHub README rendered in markdown"
+    />
   </v-sheet>
 </template>
 
