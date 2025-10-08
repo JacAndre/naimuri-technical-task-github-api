@@ -6,6 +6,7 @@
       :loading="repoStore.loadingRepos"
       item-value="id"
       class="elevation-1 mt-4"
+      striped="even"
     >
       <template #item="{ item }">
         <tr>
@@ -13,25 +14,31 @@
             <a :href="item.html_url" target="_blank">{{ item.name }}</a>
           </td>
           <td>{{ item.language }}</td>
-          <td>{{ item.stargazers_count }}</td>
-          <td>{{ item.forks_count }}</td>
-          <td>{{ item.open_issues_count }}</td>
+          <td style="text-align: center">{{ item.stargazers_count }}</td>
+          <td style="text-align: center">{{ item.forks_count }}</td>
+          <td style="text-align: center">{{ item.open_issues_count }}</td>
           <td>
-            <v-btn size="small" @click="openReadme(item)"> View README </v-btn>
+            <v-btn size="small" elevation="1" variant="text" @click="openReadme(item)">
+              View README
+            </v-btn>
           </td>
         </tr>
       </template>
     </v-data-table>
 
     <v-dialog v-model="showDialog" max-width="900">
-      <v-card>
-        <v-card-title class="text-h6"> {{ selectedRepo?.name }} README </v-card-title>
-        <v-card-text>
+      <v-card class="pa-4">
+        <a :href="selectedRepo?.html_url" target="_blank">
+          <v-card-title class="readme-title text-h5 text-decoration-underline">
+            {{ selectedRepo?.name }} README
+          </v-card-title>
+        </a>
+        <v-card-text class="pa-0">
           <ReadmeViewer :content="repoStore.readme" :loading="repoStore.loadingReadme" />
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="readme-actions">
           <v-spacer />
-          <v-btn text @click="showDialog = false">Close</v-btn>
+          <v-btn elevation="1" @click="showDialog = false">Close</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -52,10 +59,10 @@ const showDialog = ref(false)
 const headers: DataTableHeader[] = [
   { title: 'Name', key: 'name', sortable: true, width: '30%' },
   { title: 'Language', key: 'language', sortable: true },
-  { title: 'Stars', key: 'stargazers_count', sortable: true },
-  { title: 'Forks', key: 'forks_count', sortable: true },
-  { title: 'Issues', key: 'open_issues_count', sortable: true },
-  { title: 'Actions', key: 'actions', sortable: false },
+  { title: 'Stars', key: 'stargazers_count', align: 'center', sortable: true },
+  { title: 'Forks', key: 'forks_count', align: 'center', sortable: true },
+  { title: 'Issues', key: 'open_issues_count', align: 'center', sortable: true },
+  { title: '', key: 'actions', sortable: false },
 ]
 
 function openReadme(repo: Repo) {
@@ -65,4 +72,23 @@ function openReadme(repo: Repo) {
 }
 </script>
 
-<style scoped></style>
+<style>
+.v-data-table-header__sort-icon {
+  opacity: 0.3 !important;
+  margin-left: 2px;
+}
+
+.readme-title {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 0px !important;
+  padding-bottom: 16px !important;
+}
+
+.readme-actions {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 16px !important;
+  padding-bottom: 0px !important;
+}
+</style>
