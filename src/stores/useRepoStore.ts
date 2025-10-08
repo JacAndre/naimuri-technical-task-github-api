@@ -1,9 +1,16 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { fetchReadme, fetchReposByUser, fetchUserInfo } from '@/services/githubService'
+import {
+  fetchReadme,
+  fetchReposByUser,
+  fetchUserInfo,
+  fetchUserSuggestions,
+} from '@/services/githubService'
 import type { Repo } from '@/types/repo'
 import type { User } from '@/types/user'
 import { extractErrorMessage } from '@/utils/extractErrorMessage'
+import { debounce } from 'vuetify/lib/util/helpers.mjs'
+import type { SuggestedUser } from '@/types/suggestedUser'
 
 export const useRepoStore = defineStore('repo', () => {
   const username = ref<string>('')
@@ -20,6 +27,28 @@ export const useRepoStore = defineStore('repo', () => {
 
   const repoJson = computed(() => repos.value)
   const currentUsername = computed(() => username.value)
+
+  const searchQuery = ref('')
+  const suggestions = ref<SuggestedUser[]>([])
+  const loadingSuggestions = ref(false)
+
+  function fetchUserAutofill(query: string): void {
+    searchQuery.value = query
+    debouncedFetch(query)
+  }
+
+  const debouncedFetch = debounce(async (query: string) => {
+    loadingSuggestions.value = true
+    try {
+      const result = await fetchUserSuggestions(query)
+      suggestions.value = [...result]
+    } catch {
+      suggestions.value = []
+      showError('Failed to fetch user suggestions')
+    } finally {
+      loadingSuggestions.value = false
+    }
+  }, 300)
 
   async function loadUserInfo(presetUser: string): Promise<void> {
     loadingRepos.value = true
@@ -78,6 +107,10 @@ export const useRepoStore = defineStore('repo', () => {
     readme,
     repoJson,
     currentUsername,
+    searchQuery,
+    suggestions,
+    loadingSuggestions,
+    fetchUserAutofill,
     loadUserInfo,
     loadRepos,
     loadReadme,
