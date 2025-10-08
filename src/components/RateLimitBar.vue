@@ -1,31 +1,39 @@
 <template>
-  <v-card class="py-4" elevation="0">
+  <v-card class="py-4" elevation="0" role="region" aria-label="GitHub API usage bar">
     <v-row align="center" justify="space-between">
       <v-col cols="auto">
-        <span class="text-caption grey--text">
+        <span
+          class="text-caption grey--text"
+          :aria-label="`${rateLimitStore.remaining} of ${rateLimitStore.limit} requests remaining`"
+        >
           {{ rateLimitStore.remaining }} / {{ rateLimitStore.limit }} remaining
         </span>
       </v-col>
     </v-row>
 
-    <v-progress-linear :model-value="usedPercent" :color="barColor" height="8" rounded striped />
+    <v-progress-linear
+      :model-value="usedPercent"
+      :color="barColor"
+      height="8"
+      rounded
+      striped
+      aria-label="GitHub API usage progress bar"
+    />
 
     <v-row class="mt-2 px-4">
       <v-spacer />
-      <span class="text-caption grey--text"> Resets at {{ resetTime }}</span>
+      <span class="text-caption grey--text" :aria-label="`Rate limit resets at ${resetTime}`">
+        Resets at {{ resetTime }}
+      </span>
     </v-row>
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRateLimitStore } from '@/stores/useRateLimitStore'
 
 const rateLimitStore = useRateLimitStore()
-
-onMounted(() => {
-  rateLimitStore.checkRateLimit()
-})
 
 const usedPercent = computed(() => {
   return rateLimitStore.limit.valueOf() > 0
