@@ -6,8 +6,7 @@
       label="Search GitHub Users"
       @input="onInput"
       clearable
-      single-line
-      variant="solo"
+      variant="outlined"
       append-inner-icon="mdi-magnify"
       hide-details
       aria-label="GitHub user search input"
